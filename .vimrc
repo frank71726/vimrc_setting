@@ -378,6 +378,7 @@ function! Do_CsTag()
         execute "!cscope -bkqR -i cscope.files"
         if filereadable("cscope.out")
             execute "cs add cscope.out"
+            execute "cs reset"
         endif
         execute "!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q"
         execute "TlistUpdate"
