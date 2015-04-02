@@ -60,7 +60,7 @@ set tm=500
 
 " file encoding
 set encoding=utf-8
-set fileencodings=ucs-bom,utf-8,big5,euc-jp,gbk,euc-kr,utf-bom,iso8859-1,euc-jp,utf-16le,latin1
+set fileencodings=utf-8,ucs-bom,big5,euc-jp,gbk,euc-kr,utf-bom,iso8859-1,euc-jp,utf-16le,latin1
 set fenc=utf-8 enc=utf-8 tenc=utf-8
 scriptencoding utf-8
 
@@ -298,6 +298,7 @@ endfunction
 
 let g:winManagerWidth = 30
 nmap <silent> <F8> :WMToggle<cr><C-w><C-w><Bar>:q<CR>
+nmap <silent> <c-F8> :WMToggle<cr>
 
 "--------------------------------------------------------------------------------------
 " Parenthesis Setting
@@ -311,8 +312,9 @@ nmap <silent> <F8> :WMToggle<cr><C-w><C-w><Bar>:q<CR>
 :inoremap < <><Left>
 :inoremap > <c-r>=ClosePair('>')<CR>
 :inoremap " ""<Left>
+:inoremap //  /**/<Left><Left><Space>
 
-function ClosePair(char)
+function! ClosePair(char)
 if getline('.')[col('.') - 1] == a:char
 return "\<Right>"
 else
@@ -340,9 +342,44 @@ inoremap <C-l> <Right>
 "--------------------------------------------------------------------------------------
 let g:vim_markdown_folding_disabled=1
 autocmd BufRead,BufNewFile *.{md,mdown,mkd,mkdn,markdown,mdwn} map <Leader>p :!exec "/usr/bin/google-chrome-stable" "%:p"<CR>
-
 "--------------------------------------------------------------------------------------
 " git setting
 " https://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message
 "--------------------------------------------------------------------------------------
 autocmd Filetype gitcommit setlocal spell textwidth=72
+
+"--------------------------------------------------------------------------------------
+" Ctags Cscope
+"--------------------------------------------------------------------------------------
+if has("cscope")
+    set cscopequickfix=s-,c-,d-,i-,t-,e-
+    set csto=0
+    set cst
+    set csverb
+endif
+
+nmap <C-_>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-_>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-_>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-_>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-_>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-_>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-_>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-_>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+
+map <F11> <ESC>:call Do_CsTag()<CR>
+function! Do_CsTag()
+    if(executable("cscope") && has("cscope") )
+        if(has('win32'))
+            execute "!dir /b *.c,*.cpp,*.h,*.java,*.cs >> cscope.files"
+        else
+            execute "!find . -name '*.h' -o -name '*.c' -o -name '*.cpp' > cscope.files"
+        endif
+        execute "!cscope -bkqR -i cscope.files"
+        if filereadable("cscope.out")
+            execute "cs add cscope.out"
+        endif
+        execute "!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q"
+        execute "TlistUpdate"
+    endif
+endfunction
