@@ -9,7 +9,7 @@
     *   <F7>  ===> QucikFix Display the previous error in the list that includes a file name.
     *   <F8>  ===> Toggle WinMmanager
     *   <F10> ===> Toggle Visual_Marka
-    *   <F11> ===>
+    *   <F11> ===> Cscope database create and update
     *   <F12> ===> Toggle auto-indenting for code paste
 
 ## EasyGrep Shortcut
@@ -34,6 +34,19 @@
                                   errors in the Vim gutter.
     *   ycm warning symbol = >? - YCM will use the value of this option as the symbol for
                                    warnings in the Vim gutter.
+
+## Cscope notes:
+    *   <C-_>s  - Find this C symbol
+    *   <C-_>g  - Find this definition
+    *   <C-_>c  - Find functions calling this function
+    *   <C-_>t  - Find assignments to
+    *   <C-_>e  - Find this egrep pattern
+    *   <C-_>f  - Find this file
+    *   <C-_>i  - Find files #including this file
+    *   <C-_>d  - Find functions called by this function
+    *  Ctrl+]   - Jump next
+    *  Ctrl+o   - Jump back
+
 ## Other shortcuts
     *   xw/xr  ===> Copy Paste between buffer
     *   CTRL-k ===> At insert mode, move the cursor to upward.
