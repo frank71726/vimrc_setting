@@ -303,16 +303,16 @@ nmap <silent> <c-F8> :WMToggle<cr>
 "--------------------------------------------------------------------------------------
 " Parenthesis Setting
 "--------------------------------------------------------------------------------------
-:inoremap ( ()<Left>
-:inoremap ) <c-r>=ClosePair(')')<CR>
-:inoremap { {}<Left><CR><UP><Right><TAB>
-:inoremap } <c-r>=ClosePair('}')<CR>
-:inoremap [ []<Left>
-:inoremap ] <c-r>=ClosePair(']')<CR>
-:inoremap < <><Left>
-:inoremap > <c-r>=ClosePair('>')<CR>
-:inoremap " ""<Left>
-:inoremap //  /**/<Left><Left><Space>
+inoremap ( ()<Left>
+inoremap ) <c-r>=ClosePair(')')<CR>
+inoremap { {}<Left><CR><CR><UP><Right><TAB>
+inoremap } <c-r>=ClosePair('}')<CR>
+inoremap [ []<Left>
+inoremap ] <c-r>=ClosePair(']')<CR>
+inoremap < <><Left>
+inoremap > <c-r>=ClosePair('>')<CR>
+inoremap " ""<Left>
+inoremap //  /**/<Left><Left><Space>
 
 function! ClosePair(char)
 if getline('.')[col('.') - 1] == a:char
