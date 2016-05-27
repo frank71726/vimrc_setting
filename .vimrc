@@ -36,11 +36,10 @@ syntax on                             " syntax highlight
 set hlsearch                          " search highlighting
 set incsearch                         " incremental search
 syntax enable
-set t_Co=256
-try
-  colorscheme solarized
-catch
-endtry
+set background=dark
+"set t_Co=256
+let g:solarized_termcolors=256
+colorscheme solarized
 set backup			                      " Make a backup before overwriting a file.
 set copyindent                        " copy the previous indentation on autoindenting
 set ignorecase                        " ignore case when searching
@@ -119,8 +118,10 @@ Bundle 'Visual-Mark'
 Bundle 'winmanager'
 Bundle 'The-NERD-tree'
 Bundle 'EasyGrep'
+Bundle 'altercation/vim-colors-solarized'
 " scripts not on GitHub
 "=====Plugin 'git://git.wincent.com/command-t.git'
+Bundle 'https://github.com/will133/vim-dirdiff'
 " git repos on your local machine (i.e. when working on your own plugin)
 "=====Plugin 'file:///home/gmarik/path/to/plugin'
 
@@ -206,6 +207,7 @@ let g:ycm_collect_identifiers_from_tags_files=1	" 開啟 YCM 基于標籤引擎
 let g:ycm_min_num_of_chars_for_completion=2	" 從第2個鍵入字符就開始羅列匹配项
 let g:ycm_cache_omnifunc=0	" 禁止緩存匹配項,每次都重新生成匹配項
 let g:ycm_seed_identifiers_with_syntax=1	" 語法關鍵字補全
+let g:ycm_disable_for_files_larger_than_kb=0
 
 "let g:ycm_server_keep_logfiles = 1
 "let g:ycm_server_log_level = 'debug'
@@ -279,11 +281,19 @@ function! QFSwitch()
   endif
 endfunction
 
-nmap <F6> :cn<cr>	" 切换到下一个结果
-nmap <F7> :cp<cr>	" 切换到上一个结果
-nmap <F4> :tabn<cr>
-nmap <F5> :tabp<cr>
+for [key, code] in [["<F1>", "\e[[A"],
+                    \ ["<F2>", "\e[[B"],
+                    \ ["<F3>", "\e[[C"],
+                    \ ["<F4>", "\e[[D"],
+                    \ ["<F5>", "\e[[E"],
+                    \]
+    execute "set" key."=".code
+endfor
 
+nmap <F6> <esc>:cn<cr>
+nmap <F7> <esc>:cp<cr>
+nmap <F4> <esc>:tabn<cr>
+nmap <F5> <esc>:tabp<cr>
 "--------------------------------------------------------------------------------------
 " NERDTree Setting
 "--------------------------------------------------------------------------------------
@@ -312,7 +322,7 @@ inoremap ] <c-r>=ClosePair(']')<CR>
 inoremap < <><Left>
 inoremap > <c-r>=ClosePair('>')<CR>
 inoremap " ""<Left>
-inoremap //  /**/<Left><Left><Space>
+inoremap //  /**/<Left><Left>
 
 function! ClosePair(char)
 if getline('.')[col('.') - 1] == a:char
@@ -358,14 +368,14 @@ if has("cscope")
     set csverb
 endif
 
-nmap <C-_>s :cs find s <C-R>=expand("<cword>")<CR><CR>
-nmap <C-_>g :cs find g <C-R>=expand("<cword>")<CR><CR>
-nmap <C-_>c :cs find c <C-R>=expand("<cword>")<CR><CR>
-nmap <C-_>t :cs find t <C-R>=expand("<cword>")<CR><CR>
-nmap <C-_>e :cs find e <C-R>=expand("<cword>")<CR><CR>
-nmap <C-_>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
-nmap <C-_>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
-nmap <C-_>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-\>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
 
 map <F11> <ESC>:call Do_CsTag()<CR>
 function! Do_CsTag()
@@ -373,7 +383,8 @@ function! Do_CsTag()
         if(has('win32'))
             execute "!dir /b *.c,*.cpp,*.h,*.java,*.cs >> cscope.files"
         else
-            execute "!find . -name '*.h' -o -name '*.c' -o -name '*.cpp' > cscope.files"
+            execute "cs kill 0"
+            execute "!find . -name '*.h' -o -name '*.c' -o -name '*.cpp' -o -name '*.s'> cscope.files"
         endif
         execute "!cscope -bkqR -i cscope.files"
         if filereadable("cscope.out")
